@@ -145,8 +145,14 @@ The constructor and some other methods accepts any of these:
 * Resources (Handles retrieved by ```fopen()```)
 * Any other kind of File Stream
 
+After constructing, the File contains ANY info retrievable via ```FileHandler::getInfo()```
+e.g. 
+```php
+$f = new File('index.php'); $f->writable; 
+```
+
 ###create()
-Create file, takes no argument, file is entered via ```new File('path/to/file');```
+Create file, accepts no param, file is entered via constructur:```new File('path/to/file');```
 ###copy($target)
 
 ###delete()
@@ -154,15 +160,22 @@ Create file, takes no argument, file is entered via ```new File('path/to/file');
 ###rename($name)
 
 ###move($target)
+Moving file to desired location, will automatically create all directories needed for new location
+example:
+```php
+$f = new File('index.php');
+$f->move('path/to/new/');
+```
+will move index.php to ```path/to/new``` and will create the folders ```./path```, ```./path/to``` and ```./path/to/new```
 
 ###chmod($octet)
-
-###merge($target)
+Changing the file permissions from 0111 to 0777
+###merge($target) *work in progress*
 
 ###read()
-
+Get file contents. Method chaining after calling this method is not possible anymore.  
 ###concat($content, $separator = CRLF)
-
+Adding content to a file.
 ###write($content)
-
+Write as in overwrite (use concat if you want to add to the file instead of overwriting)
 
