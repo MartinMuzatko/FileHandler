@@ -1,0 +1,19 @@
+{
+    "name": "MartinMuzatko/FileHandler",
+    "type": "library",
+    "description": "Creating, Reading, Writing, Deleting Files & More, see https://github.com/MartinMuzatko/FileHandler",
+    "keywords": ["file","filehandler","filehandling"],
+    "homepage": "https://github.com/MartinMuzatko/FileHandler",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Martin Muzatko",
+            "email": "martin@happy-css.com",
+            "homepage": "http://happy-css.com",
+            "role": "Full Stack Dev"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    }
+}
