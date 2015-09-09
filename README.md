@@ -79,15 +79,19 @@ Example:
 $info = FileHandler::getInfo($file); echo $info->writable;
 ```
 Returns these informations:
+
 **Paths**
+
  * dirname
  * basename
  * extension
  * filename
  * path
+
 **Dimensions**
  * width
  * height
+
 **Timestamps and other Properties**
  * created
  * modified
@@ -95,10 +99,13 @@ Returns these informations:
  * type
  * mimetype (only with finfo enabled)
  * encoding (only with finfo enabled)
+
 **Permissions**
+
  * owner
  * group
  * perms
+
 **Checks - Boolean**
  * writable
  * readable
