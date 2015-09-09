@@ -24,6 +24,12 @@ or add it as dependency:
 
 # Usage
 
+Include the files or use autoloader.
+```php
+use martinmuzatko\filehandler\File;
+use martinmuzatko\filehandler\Handler as FileHandler;
+```
+
 Using the methods below, you can easily create, write, rename, read files.
 While **FileHandler** is a set of static methods, **File** serves a convenient way of quickly modifying files.
 
@@ -73,28 +79,33 @@ Example:
 $info = FileHandler::getInfo($file); echo $info->writable;
 ```
 Returns these informations:
+**Paths**
  * dirname
  * basename
  * extension
  * filename
  * path
+**Dimensions**
  * width
  * height
+**Timestamps and other Properties**
  * created
  * modified
  * size
  * type
+ * mimetype (only with finfo enabled)
+ * encoding (only with finfo enabled)
+**Permissions**
  * owner
  * group
  * perms
+**Checks - Boolean**
  * writable
  * readable
  * exists
  * isfile
  * isdir
  * islink
- * mimetype
- * encoding
 
 ### getAsArray($file)
 Returns file content as array.
@@ -132,6 +143,7 @@ The constructor and some other methods accepts any of these:
 * Instance of File
 * String (Paths)
 * Resources (Handles retrieved by ```fopen()```)
+* Any other kind of File Stream
 
 ###create()
 Create file, takes no argument, file is entered via ```new File('path/to/file');```
