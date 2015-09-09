@@ -6,10 +6,10 @@ There are some extra file tools out there, like this here: https://github.com/el
 
 # Constants
 
-TAB
-Linefeed (LF)
-Carriage Return (CR)
-Windows Combination (CRLF)
+* TAB
+* Linefeed (LF)
+* Carriage Return (CR)
+* Windows Combination (CRLF)
 
 # Methods
 
