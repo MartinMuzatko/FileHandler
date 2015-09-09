@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Utility;
+namespace MartinMuzatko\FileHandler;
 
 /**
  * A very simple Filehandler.
@@ -18,7 +18,7 @@ define('CR', chr(13));
 // Windows combination
 define('CRLF', CR.LF);
 
-class FileHandler
+class Handler
 {
 
 	/**

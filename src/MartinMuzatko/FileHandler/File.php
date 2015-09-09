@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Utility;
+namespace MartinMuzatko\FileHandler;
 
 /**
 * 
