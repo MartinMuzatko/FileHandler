@@ -1,5 +1,5 @@
 {
-    "name": "MartinMuzatko/FileHandler",
+    "name": "martin-muzatko/file-handler",
     "type": "library",
     "description": "Creating, Reading, Writing, Deleting Files & More, see https://github.com/MartinMuzatko/FileHandler",
     "keywords": ["file","filehandler","filehandling"],
