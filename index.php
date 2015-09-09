@@ -24,6 +24,15 @@ $file
 
 ;
 
+$customers = ['01-jake', '02-mike', '03-francis', '04-martin', '05-jane'];
+foreach ($customers as $customer)
+{
+	$file = new File($customer.'/info.json');
+	$file
+		->create()
+		->write('[{ title: "Read instructions."}]')
+		->chmod(0644);
+}
 
 
 $fs = FileHandler::listFiles(__DIR__, true, true);
