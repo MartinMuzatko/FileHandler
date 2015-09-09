@@ -4,9 +4,23 @@ As lazy I am, when it comes to php function redundancy, I prefer to create my ow
 I am using this self-made FileHandler for years now, and I still can't find a viable alternative.
 There are some extra file tools out there, like this here: https://github.com/electrical/php-filehandler/blob/master/filehandler.class.php
 
-# Requirements
+# Optional Requirements
 
 Make sure to enable finfo (fileinfo) php extension to get ```mimetype``` and ```encoding``` in ```FileHandler::getInfo```
+
+# Installing
+
+**Via Composer:**
+```
+php composer.phar require martinmuzatko/filehandler
+```
+or add it as dependency:
+```
+"require": {
+	"martinmuzatko/filehandler": "*"
+}
+```
+
 
 # Usage
 
