@@ -13,23 +13,152 @@
 		<script type="text/javascript" src="js/libs/less.js"></script>
 		<script type="text/javascript" src="js/libs/prefixfree.js"></script>
 		<script type="text/javascript" src="js/libs/riot.js"></script>
+		<script type="text/javascript" src="js/libs/jquery.js"></script>
+		<script type="text/javascript" src="js/libs/slick.js"></script>
+		<script type="text/javascript" src="js/libs/prism.js"></script>
 	
 
 	</head>
 	<body>
-
 		<header>
 			<h1>FileHandler</h1>
-			<span>Your everyday Backendhelper</span>
+			<span>Your daily Backend-Buddy</span>
 		</header>
-
-		<script src="js/mixins/date.js"></script>
-
-		<script type="riot/tag" src="js/tags/app.js"></script>
+		<nav>w
+			<a href="#Examples">Examples</a>
+			<a href="#Install">Install</a>
+			<a href="#Usage">Usage</a>
+			<a href="#Docs">Docs</a>
+		</nav>
+		<main>
+			<article id="Examples">
+				<h2><a href="#Examples">Examples</a></h2>
+				<div class="slides">
+					<div>
+						<h3>Batch creating</h3>
+						<div layout="row" layout-align="space-between">
+							<pre flex="50">
+								<code class="language-php">
+$customers = [1,2,3,4,5];
+foreach ($customers as $customer)
+{
+	$file = new File($customer.'/todo.json');
+	$file
+		->create()
+		->write('[{ title: "Read instructions."}]')
+		->chmod(0644);
+}
+								</code>
+							</pre>
+							<ul flex="40" class="files">
+								<li>
+									<i class="fa fa-folder"></i>1
+									<ul>
+										<li><i class="fa fa-file"></i>todo.json</li>
+									</ul>
+								</li>
+								<li>
+									<i class="fa fa-folder"></i>2
+									<ul>
+										<li><i class="fa fa-file"></i>todo.json</li>
+									</ul>
+								</li>
+								<li>
+									<i class="fa fa-folder"></i>3
+									<ul>
+										<li><i class="fa fa-file"></i>todo.json</li>
+									</ul>
+								</li>
+								<li>
+									<i class="fa fa-folder"></i>4
+									<ul>
+										<li><i class="fa fa-file"></i>todo.json</li>
+									</ul>
+								</li>
+								<li>
+									<i class="fa fa-folder"></i>5
+									<ul>
+										<li><i class="fa fa-file"></i>todo.json</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div>
+						<h3>Batch creating</h3>
+						<div layout="row" layout-align="space-between">
+							<pre flex="50">
+								<code class="language-php">
+$customers = [1,2,3,4,5];
+foreach ($customers as $customer)
+{
+	$file = new File($customer.'/todo.json');
+	$file
+		->create()
+		->write('[{ title: "Read instructions."}]')
+		->chmod(0644);
+}
+								</code>
+							</pre>
+							<ul flex="40" class="files">
+								<li>
+									<i class="fa fa-folder"></i>1
+									<ul>
+										<li><i class="fa fa-file"></i>todo.json</li>
+									</ul>
+								</li>
+								<li>
+									<i class="fa fa-folder"></i>2
+									<ul>
+										<li><i class="fa fa-file"></i>todo.json</li>
+									</ul>
+								</li>
+								<li>
+									<i class="fa fa-folder"></i>3
+									<ul>
+										<li><i class="fa fa-file"></i>todo.json</li>
+									</ul>
+								</li>
+								<li>
+									<i class="fa fa-folder"></i>4
+									<ul>
+										<li><i class="fa fa-file"></i>todo.json</li>
+									</ul>
+								</li>
+								<li>
+									<i class="fa fa-folder"></i>5
+									<ul>
+										<li><i class="fa fa-file"></i>todo.json</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</article>
+			<article id="Install">
+				<h2><a href="#Install">Install</a></h2>
+			</article>
+			<article id="Usage">
+				<h2><a href="#Usage">Usage</a></h2>
+			</article>
+			<article id="Docs">
+				<h2><a href="#Docs">Docs</a></h2>
+			</article>
+		</main>
+		<script type="riot/tag" src="js/tags/examples.js"></script>
 		<script type="riot/tag" src="js/tags/example.js"></script>
 
 		<script type="text/javascript">
 			riot.mount('*')
+			$('.slides').slick(
+				{
+					autoplay: true,
+					autoplaySpeed: 6000,
+					speed: 2000,
+					dots: true
+				}
+			)
 		</script>
 	</body>
 </html>

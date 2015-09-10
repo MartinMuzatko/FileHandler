@@ -1,98 +1,33 @@
 main
 {
-	background: @colorFillDark;
+	//background: @colorFillDark;
 	article
 	{
 		padding: 1em;
 	}
 }
 
-
-
-news
+*
 {
-	> menu
+	box-sizing: border-box;
+}
+
+article .slides
+{
+	padding: 2em;
+	background: hsl(200,50%,50%);
+}
+
+.files
+{
+	background: @colorFillLight;
+	list-style: none;
+	.fa
 	{
-		background: @colorMain;
-		padding: 1em 10%;
-		a
-		{
-			color: @colorFillLight;
-			&:after
-			{
-				padding: 0 .5em;
-				font-size: 1.1em;
-				content : '|';
-				color: darken(@colorFillLight, 10%);
-			}
-			&:last-child:after
-			{
-				content : '';
-			}
-		}
+		margin-right: .5em;
 	}
-
-	.happy-article
+	ul
 	{
-		background: hsl(200, 50%, 50%);
-	}
-
-	.happy-lesson
-	{
-		background: hsl(0, 50%, 50%);
-	}
-
-	.news-featured 
-	{
-		article
-		{
-			background: @colorFillLight;
-			padding: 1em 10%;
-		}
-	}
-
-	.news-latest
-	{
-		padding: 0 10% 1em;
-		.border(@colorLight, -.4em);
-		> div
-		{
-			margin: 1em 0;
-			.border();
-		}
-		article
-		{
-			height: 100%;
-			position: relative;
-			
-
-			h3
-			{
-				padding: 0 0 .5em;
-				.border(@colorShadow, -.05rem);
-			}
-
-			time
-			{
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				padding: 1em;
-			}
-
-			p
-			{
-				margin: .5em 0 2.5em;
-			}
-		}
-
-		.button
-		{
-			position: absolute;
-			bottom: 0;
-			right: 0;
-			margin: 1em;
-			line-height: 1;
-		}
+		list-style: none;
 	}
 }
