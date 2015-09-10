@@ -5,7 +5,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-		<title></title>
+		<title>FileHandler - Your daily Backend Buddy</title>
 
 		<link rel="stylesheet/less" type="text/css" href="less/main.less" />
 
@@ -16,26 +16,37 @@
 		<script type="text/javascript" src="js/libs/jquery.js"></script>
 		<script type="text/javascript" src="js/libs/slick.js"></script>
 		<script type="text/javascript" src="js/libs/prism.js"></script>
-	
 
 	</head>
 	<body>
 		<header>
-			<h1>FileHandler</h1>
-			<span>Your daily Backend-Buddy</span>
+			<div layout="row">
+				<div flex="60">
+					<h1>FileHandler</h1>
+					<span>Your daily Backend-Buddy</span>
+				</div>
+				<div flex="40" class="written-by">
+					<p>Written with <span style="color: red">♥</span> by <a href="https://github.com/MartinMuzatko">@MartinMuzatko</a></p>
+					<p><small>Part of <a href="http://happy-css.com">happy-css.com</a></small></p>
+					<p><small>Love this tool?</small>
+						<iframe src="https://ghbtns.com/github-btn.html?user=MartinMuzatko&repo=FileHandler&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
+					</p> 
+				</div>
+			</div>
+			<nav>
+				<a href="#Examples">Examples</a>
+				<a href="#Install">Install</a>
+				<a href="#Usage">Usage</a>
+				<a href="#Docs">Docs</a>
+			</nav>
+			<a href="https://github.com/MartinMuzatko/FileHandler"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
 		</header>
-		<nav>w
-			<a href="#Examples">Examples</a>
-			<a href="#Install">Install</a>
-			<a href="#Usage">Usage</a>
-			<a href="#Docs">Docs</a>
-		</nav>
 		<main>
 			<article id="Examples">
 				<h2><a href="#Examples">Examples</a></h2>
 				<div class="slides">
 					<div>
-						<h3>Batch creating</h3>
+						<h3>Batch create tons of folders.</h3>
 						<div layout="row" layout-align="space-between">
 							<pre flex="50">
 								<code class="language-php">
@@ -52,31 +63,31 @@ foreach ($customers as $customer)
 							</pre>
 							<ul flex="40" class="files">
 								<li>
-									<i class="fa fa-folder"></i>1
+									<i class="fa fa-folder-open"></i>1
 									<ul>
 										<li><i class="fa fa-file"></i>todo.json</li>
 									</ul>
 								</li>
 								<li>
-									<i class="fa fa-folder"></i>2
+									<i class="fa fa-folder-open"></i>2
 									<ul>
 										<li><i class="fa fa-file"></i>todo.json</li>
 									</ul>
 								</li>
 								<li>
-									<i class="fa fa-folder"></i>3
+									<i class="fa fa-folder-open"></i>3
 									<ul>
 										<li><i class="fa fa-file"></i>todo.json</li>
 									</ul>
 								</li>
 								<li>
-									<i class="fa fa-folder"></i>4
+									<i class="fa fa-folder-open"></i>4
 									<ul>
 										<li><i class="fa fa-file"></i>todo.json</li>
 									</ul>
 								</li>
 								<li>
-									<i class="fa fa-folder"></i>5
+									<i class="fa fa-folder-open"></i>5
 									<ul>
 										<li><i class="fa fa-file"></i>todo.json</li>
 									</ul>
@@ -85,50 +96,37 @@ foreach ($customers as $customer)
 						</div>
 					</div>
 					<div>
-						<h3>Batch creating</h3>
+						<h3>Manage uploads without twisting your mind</h3>
 						<div layout="row" layout-align="space-between">
 							<pre flex="50">
 								<code class="language-php">
-$customers = [1,2,3,4,5];
-foreach ($customers as $customer)
+$file = new File($_FILES['file']['tmp_name']);
+if ($file->width < 200 && $file->height < 200)
 {
-	$file = new File($customer.'/todo.json');
-	$file
+	$upload = new File('avatar.'.$file->extension);
+	$upload
 		->create()
-		->write('[{ title: "Read instructions."}]')
-		->chmod(0644);
+		->write($file)
+		->move('files/user/avatar');
+	echo 'Your avatar has been uploaded';
 }
 								</code>
 							</pre>
 							<ul flex="40" class="files">
 								<li>
-									<i class="fa fa-folder"></i>1
+									<i class="fa fa-folder-open"></i>files
 									<ul>
-										<li><i class="fa fa-file"></i>todo.json</li>
-									</ul>
-								</li>
-								<li>
-									<i class="fa fa-folder"></i>2
-									<ul>
-										<li><i class="fa fa-file"></i>todo.json</li>
-									</ul>
-								</li>
-								<li>
-									<i class="fa fa-folder"></i>3
-									<ul>
-										<li><i class="fa fa-file"></i>todo.json</li>
-									</ul>
-								</li>
-								<li>
-									<i class="fa fa-folder"></i>4
-									<ul>
-										<li><i class="fa fa-file"></i>todo.json</li>
-									</ul>
-								</li>
-								<li>
-									<i class="fa fa-folder"></i>5
-									<ul>
-										<li><i class="fa fa-file"></i>todo.json</li>
+										<li>
+											<i class="fa fa-folder-open"></i>user
+											<ul>
+												<li>
+													<i class="fa fa-folder-open"></i>avatar
+													<ul>
+														<li><i class="fa fa-file"></i>avatar.png</li>
+													</ul>
+												</li>
+											</ul>
+										</li>
 									</ul>
 								</li>
 							</ul>
@@ -138,12 +136,50 @@ foreach ($customers as $customer)
 			</article>
 			<article id="Install">
 				<h2><a href="#Install">Install</a></h2>
+				<div layout="row" layout-align="space-between">
+					<div flex="40">
+						<h3>Composer</h3>
+						<pre>composer require martinmuzatko/filehandler</pre>
+
+						<p>or add it as dependency:</p>
+						<pre>
+"require": {
+    "martinmuzatko/filehandler": "*"
+}
+						</pre>
+					</div>
+					<div flex="50">
+						<h3>Downloads</h3>
+
+						<h4><i class="fa fa-tag"></i> v1.0.0</h4>
+						<ul class="release-downloads">
+							<li>
+								<a href="/MartinMuzatko/FileHandler/archive/v1.0.0.zip" rel="nofollow">
+									<i class="fa fa-file-zip-o fa-2x"></i>
+									<strong>Source code</strong> (zip)
+								</a>
+							</li>
+							<li>
+								<a href="/MartinMuzatko/FileHandler/archive/v1.0.0.tar.gz" rel="nofollow">
+									<i class="fa fa-file-zip-o fa-2x"></i>
+									<strong>Source code</strong> (tar.gz)
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
 			</article>
 			<article id="Usage">
 				<h2><a href="#Usage">Usage</a></h2>
+				<div>
+					
+				</div>
 			</article>
 			<article id="Docs">
 				<h2><a href="#Docs">Docs</a></h2>
+				<div>
+					
+				</div>
 			</article>
 		</main>
 		<script type="riot/tag" src="js/tags/examples.js"></script>

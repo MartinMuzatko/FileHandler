@@ -1,9 +1,84 @@
+header
+{
+	background: @colorFillDark;
+	color: @colorFillLight;
+	h1
+	{
+		font-size: 3em;
+		padding: .2em 3rem 0;
+		letter-spacing: -.1rem;
+		font-weight: 400;
+	}
+	h1 + span
+	{
+		padding: 0 3.1rem 1em;
+		line-height: 1;
+		font-size: 1.2em;
+		font-family: @fontCaption;
+		font-style: italic;
+		font-weight: 300;
+		display: block;
+	}
+	nav
+	{
+		background: lighten(@colorFillDark, 10%);
+		padding: 1em 3rem;
+		a
+		{
+			padding-right: .5em;
+		}
+	}
+	.border(fadeout(@colorLight, 10%));
+}
+
+.written-by
+{
+	> *
+	{
+		margin: 0;
+		display: none;
+		@media all and (min-width: 35rem)
+		{
+			display: block;
+		}
+	}
+	iframe
+	{
+		position: relative;
+		top: .25em;
+	}
+}
+
+
 main
 {
 	//background: @colorFillDark;
 	article
 	{
-		padding: 1em;
+		padding: 1em 10%;
+		> div
+		{
+			padding: 0 2em;
+		}
+	}
+	#Examples
+	{
+		padding: 1em 0;
+		h2
+		{
+			padding-left: 10%;
+			padding-right: 10%;
+		}
+		.slides
+		{
+			padding: 1em 10%;
+			background: @colorMain;
+			.border(fadeout(@colorShadow, 10%));
+			.slick-list
+			{
+				margin: 0 2em;
+			}
+		}
 	}
 }
 
@@ -12,14 +87,12 @@ main
 	box-sizing: border-box;
 }
 
-article .slides
-{
-	padding: 2em;
-	background: hsl(200,50%,50%);
-}
 
 .files
 {
+	height: 100%;
+	font-size: 1.1rem;
+	padding: 1em;
 	background: @colorFillLight;
 	list-style: none;
 	.fa
@@ -28,6 +101,17 @@ article .slides
 	}
 	ul
 	{
+		padding-left: 1.5em;
 		list-style: none;
+	}
+}
+
+
+.release-downloads
+{
+	list-style: none;
+	li
+	{
+		padding: 1em;
 	}
 }
