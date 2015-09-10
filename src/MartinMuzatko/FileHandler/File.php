@@ -2,9 +2,14 @@
 
 namespace MartinMuzatko\FileHandler;
 
+use MartinMuzatko\FileHandler\Handler as FileHandler;
+
 /**
-* 
-*/
+ * A very simple Filehandler, using Method Chaining style.
+ * @author Martin Muzatko
+ * @copyright 2015
+ * @license MIT license
+ */
 class File
 {
 
@@ -12,13 +17,22 @@ class File
 
 	private $content;
 
-	public $handle;
+	#public $handle;
 
-	private $mode = 'r+';
+	#private $mode = 'r+';
 
-	function __construct($path)
+	/**
+	 * The constructor and some other methods accepts any of these:
+	 * 
+	 * Instance of File
+	 * String (Paths)
+	 * Resources (Handles retrieved by fopen())
+	 * Any other kind of File Stream
+	 * @param mixed $path
+	 */
+	function __construct($resource)
 	{
-		$path = $this->getResource($path);
+		$path = $this->getResource($resource);
 		if ($path)
 		{
 			$this->path = $path;
@@ -72,6 +86,12 @@ class File
 		return (object)$info;
 	}
 
+	/**
+	 * Similar to Filehandler::getInfo()
+	 * Maps all information to the object, so you can access them via:
+	 * $f = new File('ex'); $f->created; $f->path; etc.
+	 * @return void
+	 */
 	protected function resolveInfo()
 	{
 		$infos = $this->getInfo();
@@ -86,27 +106,37 @@ class File
 		}*/
 	}
 
-	protected function getResource($target)
+	/**
+	 * Base for Construct.
+	 * @see File::__construct
+	 * @param string | resource | File $resource
+	 * @return string | boolean
+	 */
+	protected function getResource($resource)
 	{
-		if (is_string($target))
+		if (is_string($resource))
 		{
-			return $target;
+			return $resource;
 		}
-		if ($target instanceof File)
+		if ($resource instanceof File)
 		{
-			return $target->path;
+			return $resource->path;
 		}
-		if (is_resource($target))
+		if (is_resource($resource))
 		{
-			if (get_resource_type($target) == 'stream')
+			if (get_resource_type($resource) == 'stream')
 			{
-				return stream_get_meta_data($target)['uri'];
+				return stream_get_meta_data($resource)['uri'];
 			}
 		}
 
 		return false;
 	}
-
+	/**
+	 * Get Content of File regardless of contenttype
+	 * @see File::__construct
+	 * @param mixed $content
+	 */
 	protected function getContent($content)
 	{
 		if ($content instanceof File || is_resource($content))
@@ -122,6 +152,13 @@ class File
 		return $this->content = $content;
 	}
 
+	/**
+	 * Resolve Directories to be created 
+	 * when moving or renaming a file to a non-existing path.
+	 * @param string $target
+	 * @param boolean $origin
+	 * @return string path of the new end-directory
+	 */
 	protected function resolveMakeDir($target, $origin = false)
 	{
 		if (strpos($target, '/') != false)
@@ -149,6 +186,16 @@ class File
 
 	/* FILE LEVEL METHODS */
 
+	/**
+	 * Creates File at destination, given by constructor
+	 * Will create all folders needed for creation
+	 * -------------------
+	 * Known bugs:
+	 * create only works with files, not with directories,
+	 * which means that the last item after the last slash (/) will be a file.
+	 * Using a slash as last item (e.g.: path/to/) it will throw E_NOTICE by fopen
+	 * @return this
+	 */
 	public function create()
 	{
 		$this->resolveMakeDir($this->path, true);
@@ -156,7 +203,11 @@ class File
 		$this->resolveInfo();
 		return $this;
 	}
-
+	/**
+	 * Copy file to target
+	 * @param mixed $target
+	 * @return this 
+	 */
 	public function copy($target)
 	{
 		$target = $this->getResource($target);
@@ -169,6 +220,10 @@ class File
 		return $this;
 	}
 
+	/**
+	 * Deletes File at destination, given by constructor
+	 * @return this
+	 */
 	public function delete()
 	{
 		if ($this->exists && unlink($this->path)) 
@@ -182,6 +237,11 @@ class File
 		return $this;
 	}
 
+	/**
+	 * Renames a file to a new name, given by constructor
+	 * It is possible to move files with this method and rename them.
+	 * @return this
+	 */
 	public function rename($name)
 	{
 		$name = $this->getResource($name);
@@ -200,6 +260,14 @@ class File
 		return $this;
 	}
 
+	/**
+	 * Moves a file to a folder. The targetpath is consisting of folders ONLY!
+	 * Doesn't care wether or not you add a trailing slash.
+	 * example:
+	 * $f = new File('file.php'); $f->move('to/another/folder')
+ 	 * @param string $target 
+	 * @return this
+	 */
 	public function move($target)
 	{
 		$target = rtrim($target, '/').'/';
@@ -210,7 +278,11 @@ class File
 		return $this;
 	}
 
-
+	/**
+	 * Changes the permissions of a file, using chmod octets
+	 * eg: 0777 (equals to 511) or 0644 (equals to 420)
+	 * @param octet |int $octet
+	 */
 	public function chmod($octet)
 	{
 		chmod($this->path, $octet);
@@ -219,11 +291,19 @@ class File
 	}
 
 	/* CONTENT LEVEL METHODS */
+	/**
+	 * Work in progress
+	 */
 	public function merge($target)
 	{
 		
 	}
 
+	/**
+	 * Read contents of file.
+	 * Method chain is broken after calling this method.
+	 * @return string
+	 */
 	public function read()
 	{
 		$read = FileHandler::read($this->path);
@@ -238,6 +318,12 @@ class File
 		return $read;
 	}
 
+	/**
+	 * Adding content to a file.
+	 * @param mixed $content
+	 * @param string $separator - defaults to newline+carriage return 
+	 * @return this
+	 */
 	public function concat($content, $separator = CRLF)
 	{
 		$read = $this->read();
@@ -248,6 +334,12 @@ class File
 		return $this;
 	}
 
+	/**
+	 * Write as in overwrite 
+	 * use concat if you want to add to the file instead of overwriting
+	 * @param mixed $content
+	 * @return this
+	 */
 	public function write($content)
 	{
 		$content = $this->getContent($content);
