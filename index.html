@@ -45,6 +45,7 @@
 			<article id="Examples">
 				<h2><a href="#Examples">Examples</a></h2>
 				<div class="slides">
+					<!-- 1. EXAMPLE -->
 					<div>
 						<h3>Batch create tons of folders.</h3>
 						<div layout="row" layout-align="space-between">
@@ -65,36 +66,42 @@ foreach ($customers as $customer)
 								<li>
 									<i class="fa fa-folder-open"></i>1
 									<ul>
-										<li><i class="fa fa-file"></i>todo.json</li>
+										<li><i class="fa fa-file"></i>todo.json
+										<code>rw-r--r--</code></li>
 									</ul>
 								</li>
 								<li>
 									<i class="fa fa-folder-open"></i>2
 									<ul>
-										<li><i class="fa fa-file"></i>todo.json</li>
+										<li><i class="fa fa-file"></i>todo.json
+										<code>rw-r--r--</code></li>
 									</ul>
 								</li>
 								<li>
 									<i class="fa fa-folder-open"></i>3
 									<ul>
-										<li><i class="fa fa-file"></i>todo.json</li>
+										<li><i class="fa fa-file"></i>todo.json
+										<code>rw-r--r--</code></li>
 									</ul>
 								</li>
 								<li>
 									<i class="fa fa-folder-open"></i>4
 									<ul>
-										<li><i class="fa fa-file"></i>todo.json</li>
+										<li><i class="fa fa-file"></i>todo.json
+										<code>rw-r--r--</code></li>
 									</ul>
 								</li>
 								<li>
 									<i class="fa fa-folder-open"></i>5
 									<ul>
-										<li><i class="fa fa-file"></i>todo.json</li>
+										<li><i class="fa fa-file"></i>todo.json
+										<code>rw-r--r--</code></li>
 									</ul>
 								</li>
 							</ul>
 						</div>
 					</div>
+					<!-- 2. EXAMPLE -->
 					<div>
 						<h3>Manage uploads without twisting your mind</h3>
 						<div layout="row" layout-align="space-between">
@@ -130,6 +137,49 @@ if ($file->width < 200 && $file->height < 200)
 									</ul>
 								</li>
 							</ul>
+						</div>
+					</div>
+					<!-- 3. EXAMPLE -->
+					<div>
+						<h3>Getting information without calling a dozen methods</h3>
+						<div layout="row" layout-align="space-between">
+							<pre flex="50">
+								<code class="language-php">
+$f = new File('files/index.php');
+echo $f->basename;
+echo $f->filename;
+echo $f->path;
+echo $f->created;
+echo $f->size;
+echo $f->perms;
+echo $f->writable;
+echo $f->readable;
+echo $f->exists;
+echo $f->isfile;
+echo $f->isdir;
+								</code>
+							</pre>
+							<div flex="40" class="files">
+								<ul>
+									<li>
+										<i class="fa fa-folder-open"></i>files
+										<ul>
+											<li><i class="fa fa-file"></i>index.php</li>
+										</ul>
+									</li>
+								</ul>
+								<div><code>basename - index.php</code></div>
+								<div><code>filename - index</code></div>
+								<div><code>path - files/index.php</code></div>
+								<div><code>created - 1441895615</code></div>
+								<div><code>size - 322 Bytes</code></div>
+								<div><code>perms - file</code></div>
+								<div><code>writable - true</code></div>
+								<div><code>readable - true</code></div>
+								<div><code>exists - 100644</code></div>
+								<div><code>isfile - true</code></div>
+								<div><code>isdir - false</code></div>
+							</div>
 						</div>
 					</div>
 				</div>
