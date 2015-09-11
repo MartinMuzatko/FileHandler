@@ -40,6 +40,7 @@ class File
 			// when working with handle that keeps open,
 			// this error is thrown:
 			// The process cannot access the file because it is being used by another process. (code: 32)
+			// So it is encouraged to close the handle after EACH action.
 			$this->resolveInfo();
 		}
 	}
@@ -51,39 +52,7 @@ class File
 
 	private function getInfo()
 	{
-		$file = $this->path;
-		$info 				= @pathinfo($file);
-		$info['path']		= $file;
-		$info['width']		= @getimagesize($file)[0];
-		$info['height']		= @getimagesize($file)[1];
-		$info['created']	= @filectime($file);
-		$info['modified']	= @filemtime($file);
-		$info['size']		= @filesize($file);
-		$info['type']		= @filetype($file);
-		$info['owner']		= @fileowner($file);
-		$info['group']		= @filegroup($file);
-		$info['perms']		= decoct(@fileperms($file));
-		$info['writable']	= @is_writable($file);
-		$info['readable']	= @is_readable($file);
-		$info['exists']		= @file_exists($file);
-		$info['isfile']		= @is_file($file);
-		$info['isdir']		= @is_dir($file);
-		$info['islink']		= @is_link($file);
-		
-		$info['mimetype'] = false;
-		$info['encoding'] = false;
-		if ($info['exists'])
-		{
-			$finfo = new \finfo();
-			$finfo->set_flags(FILEINFO_MIME_TYPE);
-			$info['mimetype']	= $finfo->file($info['path']); 
-			$finfo->set_flags(FILEINFO_MIME_ENCODING);
-			if ($info['mimetype'] != 'application/octet-stream')
-			{
-				$info['encoding'] = $finfo->file($info['path']); 
-			}
-		}
-		return (object)$info;
+		return FileHandler::getInfo($this->path);
 	}
 
 	/**
@@ -99,11 +68,13 @@ class File
 		{
 			$this->$key = $info;
 		}
-/*		if (stream_get_meta_data($this->handle)['uri'] != $this->path)
+		/*
+		if (stream_get_meta_data($this->handle)['uri'] != $this->path)
 		{
 			fclose($this->handle);
 			$this->handle = fopen($this->path, $this->mode);
-		}*/
+		}
+		*/
 	}
 
 	/**
@@ -291,9 +262,6 @@ class File
 	}
 
 	/* CONTENT LEVEL METHODS */
-	/**
-	 * Work in progress
-	 */
 	public function merge($target)
 	{
 		
