@@ -131,8 +131,11 @@ class Handler
 	}
 
 	/**
-	 * Creates File but does not overwrite existing files.
-	 * Returns true if succeeded.
+	 * Creates File or Directory but does not overwrite existing files.
+	 * With a trailing slash, the file is treated as a directory
+	 * Example: create('index') creates a file called index
+	 * Example: create('index/') creates a directory called index
+	 * Returns true if succeeded, false if file already exists
 	 * @param string $file
 	 * @param string $content = ''
 	 * @return boolean
