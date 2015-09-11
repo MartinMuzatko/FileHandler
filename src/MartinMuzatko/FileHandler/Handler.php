@@ -140,10 +140,21 @@ class Handler
 	public static function create($file, $content = '')
 	{
 		$info = self::getInfo($file);
-		
-		$handle = fopen($file,'w+');
-		fwrite($handle, $content);
-		fclose($handle);
+		if ($info->exists)
+		{
+			return false;
+		}
+		if (strrpos($file, '/') + 1 == strlen($file))
+		{
+			mkdir($file);
+		}
+		else
+		{
+			$handle = fopen($file,'w+');
+			fwrite($handle, $content);
+			fclose($handle);
+		}
+
 		return true;
 	}
 
