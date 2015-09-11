@@ -54,7 +54,7 @@
 $customers = [1,2,3,4,5];
 foreach ($customers as $customer)
 {
-	$file = new File($customer.'/todo.json');
+	$file = new File('customer/'.$customer.'/todo.json');
 	$file
 		->create()
 		->write('[{ title: "Read instructions."}]')
@@ -64,38 +64,43 @@ foreach ($customers as $customer)
 							</pre>
 							<ul flex="40" class="files">
 								<li>
-									<i class="fa fa-folder-open"></i>1
+									<i class="fa fa-folder-open"></i>customer
 									<ul>
-										<li><i class="fa fa-file"></i>todo.json
-										<code>rw-r--r--</code></li>
-									</ul>
-								</li>
-								<li>
-									<i class="fa fa-folder-open"></i>2
-									<ul>
-										<li><i class="fa fa-file"></i>todo.json
-										<code>rw-r--r--</code></li>
-									</ul>
-								</li>
-								<li>
-									<i class="fa fa-folder-open"></i>3
-									<ul>
-										<li><i class="fa fa-file"></i>todo.json
-										<code>rw-r--r--</code></li>
-									</ul>
-								</li>
-								<li>
-									<i class="fa fa-folder-open"></i>4
-									<ul>
-										<li><i class="fa fa-file"></i>todo.json
-										<code>rw-r--r--</code></li>
-									</ul>
-								</li>
-								<li>
-									<i class="fa fa-folder-open"></i>5
-									<ul>
-										<li><i class="fa fa-file"></i>todo.json
-										<code>rw-r--r--</code></li>
+										<li>
+											<i class="fa fa-folder-open"></i>1
+											<ul>
+												<li><i class="fa fa-file"></i>todo.json
+												<code>rw-r--r--</code></li>
+											</ul>
+										</li>
+										<li>
+											<i class="fa fa-folder-open"></i>2
+											<ul>
+												<li><i class="fa fa-file"></i>todo.json
+												<code>rw-r--r--</code></li>
+											</ul>
+										</li>
+										<li>
+											<i class="fa fa-folder-open"></i>3
+											<ul>
+												<li><i class="fa fa-file"></i>todo.json
+												<code>rw-r--r--</code></li>
+											</ul>
+										</li>
+										<li>
+											<i class="fa fa-folder-open"></i>4
+											<ul>
+												<li><i class="fa fa-file"></i>todo.json
+												<code>rw-r--r--</code></li>
+											</ul>
+										</li>
+										<li>
+											<i class="fa fa-folder-open"></i>5
+											<ul>
+												<li><i class="fa fa-file"></i>todo.json
+												<code>rw-r--r--</code></li>
+											</ul>
+										</li>
 									</ul>
 								</li>
 							</ul>
@@ -114,20 +119,20 @@ if ($file->width < 200 && $file->height < 200)
 	$upload
 		->create()
 		->write($file)
-		->move('files/user/avatar');
+		->move('customer/1/img');
 	echo 'Your avatar has been uploaded';
 }
 								</code>
 							</pre>
 							<ul flex="40" class="files">
 								<li>
-									<i class="fa fa-folder-open"></i>files
+									<i class="fa fa-folder-open"></i>customer
 									<ul>
 										<li>
-											<i class="fa fa-folder-open"></i>user
+											<i class="fa fa-folder-open"></i>1
 											<ul>
 												<li>
-													<i class="fa fa-folder-open"></i>avatar
+													<i class="fa fa-folder-open"></i>img
 													<ul>
 														<li><i class="fa fa-file"></i>avatar.png</li>
 													</ul>
@@ -143,20 +148,64 @@ if ($file->width < 200 && $file->height < 200)
 					<div>
 						<h3>Getting information without calling a dozen methods</h3>
 						<div layout="row" layout-align="space-between">
-							<pre flex="50">
-								<code class="language-php">
-$f = new File('files/index.php');
+							<div flex="50">
+								<pre>
+									<code class="language-php">
+$f = new File('customer/1/img/avatar.png');
 echo $f->basename;
 echo $f->filename;
 echo $f->path;
 echo $f->created;
 echo $f->size;
 echo $f->perms;
-echo $f->writable;
-echo $f->readable;
 echo $f->exists;
 echo $f->isfile;
 echo $f->isdir;
+echo $f->mimetype;
+									</code>
+								</pre>
+								<a href="#Docs" class="button secondary">More Attributes</a>
+							</div>
+							<div flex="40" class="files">
+								<ul>
+									<li>
+										<i class="fa fa-folder-open"></i>customer
+										<ul>
+											<li>
+												<i class="fa fa-folder-open"></i>1
+												<ul>
+													<li>
+														<i class="fa fa-folder-open"></i>img
+														<ul>
+															<li><i class="fa fa-file"></i>avatar.png</li>
+														</ul>
+													</li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+								</ul>
+								<div><code>basename - avatar.png</code></div>
+								<div><code>filename - avatar</code></div>
+								<div><code>path - customer/1/img/avatar.png</code></div>
+								<div><code>created - 1441965344 (11.9.2015)</code></div>
+								<div><code>size - 16208 Bytes</code></div>
+								<div><code>perms - 100644 (rw-r--r--)</code></div>
+								<div><code>exists - true</code></div>
+								<div><code>isfile - true</code></div>
+								<div><code>isdir - false</code></div>
+								<div><code>mimetype - image/png</code></div>
+							</div>
+						</div>
+					</div>
+					<!-- 4. EXAMPLE -->
+					<div>
+						<h3>Find and list files in your project</h3>
+						<div layout="row" layout-align="space-between">
+							<pre flex="50">
+								<code class="language-php">
+$f = new File('files/');
+$f->find('/\w.*/');
 								</code>
 							</pre>
 							<div flex="40" class="files">
@@ -168,17 +217,6 @@ echo $f->isdir;
 										</ul>
 									</li>
 								</ul>
-								<div><code>basename - index.php</code></div>
-								<div><code>filename - index</code></div>
-								<div><code>path - files/index.php</code></div>
-								<div><code>created - 1441895615</code></div>
-								<div><code>size - 322 Bytes</code></div>
-								<div><code>perms - file</code></div>
-								<div><code>writable - true</code></div>
-								<div><code>readable - true</code></div>
-								<div><code>exists - 100644</code></div>
-								<div><code>isfile - true</code></div>
-								<div><code>isdir - false</code></div>
 							</div>
 						</div>
 					</div>
@@ -200,17 +238,16 @@ echo $f->isdir;
 					</div>
 					<div flex="50">
 						<h3>Downloads</h3>
-
 						<h4><i class="fa fa-tag"></i> v1.0.0</h4>
 						<ul class="release-downloads">
 							<li>
-								<a href="/MartinMuzatko/FileHandler/archive/v1.0.0.zip" rel="nofollow">
+								<a class="button secondary" href="/MartinMuzatko/FileHandler/archive/v1.0.0.zip" rel="nofollow">
 									<i class="fa fa-file-zip-o fa-2x"></i>
 									<strong>Source code</strong> (zip)
 								</a>
 							</li>
 							<li>
-								<a href="/MartinMuzatko/FileHandler/archive/v1.0.0.tar.gz" rel="nofollow">
+								<a class="button secondary" href="/MartinMuzatko/FileHandler/archive/v1.0.0.tar.gz" rel="nofollow">
 									<i class="fa fa-file-zip-o fa-2x"></i>
 									<strong>Source code</strong> (tar.gz)
 								</a>
