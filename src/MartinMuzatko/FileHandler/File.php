@@ -314,4 +314,28 @@ class File
 		FileHandler::write($this->path, $content);
 		return $this;
 	}
+
+	/**
+	 * Find files in directory, regex enabled.
+	 * By default, lists all files.
+	 * returns empty array if nothing found.
+	 * @param string|regex $lookup
+	 * @return array
+	 */
+	public function find($lookup = '/.+/')
+	{
+	 	// TODO: recursive folder search+list
+		$files = scandir($this->dirname);
+		if (strpos($lookup, '/') === 0 
+			&& strrpos($lookup, '/') + 1 == strlen($lookup))
+		{
+			return preg_grep($lookup, $files);
+		}
+		else
+		{
+			$files = @$files[array_flip($files)[$lookup]];
+			return $files == NULL ? [] : [$files];
+		}
+	}
+
 }
