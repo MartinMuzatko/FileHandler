@@ -180,8 +180,77 @@ Changing the file permissions from 0111 to 0777
 
 ###read()
 Get file contents. Method chaining after calling this method is not possible anymore.  
+
 ###concat($content, $separator = CRLF)
 Adding content to a file.
+
 ###write($content)
 Write as in overwrite (use concat if you want to add to the file instead of overwriting)
 
+###find($lookup)
+Find files in a directory, regex enabled.
+Retrievable via ```$file = new File(); $file->find(); $file->selection;``` or ```$file->getSelected()``` 
+
+####EXAMPLES:
+#####Find by string:
+```
+find('item.png')
+```
+
+--------------------
+
+#####Find by Regex:
+```
+find('/[\w]*$/')
+```
+
+--------------------
+
+#####Find by Property - Value pairs with operators:
+
+```find(['mimetype' => 'image/png'])``` - find all files of mimetype image/png
+
+```find(['size' => '<'.600*1024])``` - find all files smaller than 600KB
+
+```find(['created' => '>1441000000'])``` - fild all files newer than 31.08.2015
+
+```find(['mimetype' => '!directory'])``` - fild all non-directory files
+
+--------------------
+
+####Operators: <, >, <=, >=, !
+####Properties are used  by getInfo()
+
+###get()
+This method is used as final method to get selections made by find() or select() or new File()
+Returns path if no selection is done.
+
+###select()
+Selecting files by 
+		paths
+		array of paths
+		array of Files
+		array of File Selections
+You can also mix these
+####Examples
+
+-------------------
+
+```
+$file->select('file.png');
+```
+
+```$file->select(['file.png', 'another.jpg', 'file.avi']);```
+
+```$file->select([['file.png', 'another.jpg'], 'file.avi']);```
+
+```$file->select([$file->find(), 'customers/file.txt']);```
+
+```
+$file->select($file);
+```
+
+-------------------
+
+Any array or array of arrays will be traversed down to create an one-dimensional array saved to public property $selection.
+Selections are retrievable by **get()**
