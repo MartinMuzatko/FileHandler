@@ -487,7 +487,7 @@ class File
 		$allowedOperators = ['<', '>', '<=', '>=', '!', '!='];
 		$regex = '/[('.implode(')(', $allowedOperators).')]/';
 		// TODO: PROBLEM WITH TYPE CASTING!
-		$searchValue = preg_split($regex, (string) $search, -1, 1)[0];
+		$searchValue = @preg_split($regex, (string) $search, -1, 1)[0];
 		$operator = str_replace($searchValue, '', $search);
 		// Operators can't be interpolated
 		// Something like if ($search $operator $value){}
