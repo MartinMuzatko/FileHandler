@@ -17,6 +17,10 @@ class File
 
 	private $content;
 
+	/**
+	 * If more than one file is present when constructing, or a selection is made via find() or select()
+	 * this property is filled with instances of the Files to these selections
+	 */
 	public $selection = [];
 
 	#public $handle;
@@ -40,7 +44,7 @@ class File
 		{
 			$this->path = $path;
 			//$this->handle = fopen($this->path, $this->mode);
-			// when working with handle that keeps open,
+			// when working with handle that stays open,
 			// this error is thrown:
 			// The process cannot access the file because it is being used by another process. (code: 32)
 			// So it is encouraged to close the handle after EACH action.
@@ -84,7 +88,7 @@ class File
 	 * Base for Construct.
 	 * @see File::__construct
 	 * @param string | resource | File $resource
-	 * @return string | array | boolean
+	 * @return array | boolean
 	 */
 	protected function getResource($resource)
 	{
@@ -92,9 +96,10 @@ class File
 		{
 			return $resource;
 		}
-		if ($resource instanceof File)
+		if ($resource instanceof File || is_array($resource))
 		{
-			return $resource->path;
+			$this->select($resource);
+			return $this->selection;
 		}
 		if (is_resource($resource))
 		{
@@ -107,40 +112,48 @@ class File
 		{
 			return dirname($_SERVER["SCRIPT_FILENAME"]).'/';
 		}
-		if (is_array($resource))
-		{
-			$this->select($resource);
-			return $this->selection; 
-		}
 
 		return false;
 	}
 
 	public function select($resources = [])
 	{
-		
+		$this->selection = [];
+		$this->resolveSelect($resources);
+		return $this;
+	}
+
+	public function resolvePath($file)
+	{
+		return is_dir($file) ? rtrim($file, '/').'/' : $file;
+	}
+
+	private function resolveSelect($resources)
+	{
 		if ($resources instanceof File)
 		{
 			if (count($resources->selection))
 			{
-				$this->sel($resources->selection);
+				foreach ($resources->selection as $resource)
+				{
+					$this->selection[] = $this->resolvePath($resource);
+				}
+			}
+			else
+			{
+				$this->selection[] = $this->resolvePath($resources->path);
+			}
+		}
+		elseif (is_array($resources))
+		{
+			foreach ($resources as $resource) 
+			{
+				$this->resolveSelect($resource);
 			}
 		}
 		else
 		{
-			$resources->selection
-		}
-		return $this;
-	}
-
-	private function sel($resources)
-	{
-		$this->selection = [];
-		foreach ($resources as $resource)
-		{
-			$this->selection[] = is_dir($resource) 
-				? rtrim($resource, '/').'/' 
-				: $resource;
+			$this->selection[] = $this->resolvePath($resources);
 		}
 	}
 
@@ -373,9 +386,9 @@ class File
 	 * find(['created' => '>15393837'])
 	 * 
 	 * --------------------
-	 * returns empty array if nothing found.
+	 * returns this and saves found Items to public $selection.
 	 * @param string|regex|array $lookup
-	 * @return array
+	 * @return this
 	 */
 	public function find($lookup = '/.+/')
 	{
@@ -427,7 +440,7 @@ class File
 			}
 		}
 		$this->selection = $foundFiles;
-		return $foundFiles;
+		return $this;
 	}
 
 	/**
@@ -462,6 +475,3 @@ class File
 		return false;
 	}
 }
-
-
-
