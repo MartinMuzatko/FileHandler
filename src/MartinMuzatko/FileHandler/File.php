@@ -424,13 +424,8 @@ class File
 	{
 		// TODO: recursive folder search+list
 
-		$scans = $this->isdir ? scandir($this->path) : scandir($this->dirname);
-		$files = [];
-		// Scanned files have to be prefixed with $this->path, as they only return their basename.
-		foreach ($scans as $scan)
-		{
-			$files[] = $this->path.$scan;
-		}
+		$files = $this->isdir ? scandir($this->path) : scandir($this->dirname);
+
 		$foundFiles = [];
 		// Find one or more files
 		if (is_string($lookup))
@@ -447,6 +442,7 @@ class File
 			else
 			{
 				$files = @$files[array_flip($files)[$lookup]];
+				$files = is_array($files) ? $files : [$files];
 				foreach($files as $file)
 				{
 					$foundFiles[] = is_dir($file) ? $file.'/' : $file;
@@ -458,7 +454,7 @@ class File
 			$fileInfos = [];
 			foreach ($files as $file)
 			{
-				$fileInfos[] = new File($file);
+				$fileInfos[] = new File($this->path. $file);
 			}
 			foreach ($fileInfos as $file)
 			{
@@ -469,7 +465,7 @@ class File
 						$info = $file->$attribute;
 						if ($this->resolveSearch($info, $search))
 						{
-							$foundFiles[] = $file->path;
+							$foundFiles[] = $file->basename;
 						}
 					}
 				}
@@ -491,7 +487,14 @@ class File
 				return ($a->$attribute > $b->$attribute) ? -1 : 1;
 			}
 		);*/
-		$this->select($foundFiles);
+
+		$result = [];
+		// Scanned files have to be prefixed with $this->path, as they only return their basename.
+		foreach ($foundFiles as $foundFile)
+		{
+			$result[] = $this->path.$foundFile;
+		}
+		$this->select($result);
 		return $this;
 	}
 
