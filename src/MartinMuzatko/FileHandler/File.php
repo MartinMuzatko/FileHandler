@@ -150,12 +150,12 @@ class File
 
 	/**
 	 * This method is used as final-method get selections made by find() or select() or new File()
-	 * Returns path if no selection is done.
-	 * @return array | string
+	 * Returns [path] if no selection is done.
+	 * @return array
 	 */
 	public function get()
 	{
-		return $this->selection == [] ? $this->path : $this->selection;
+		return $this->selection == [] ? [$this->path] : $this->selection;
 	}
 
 	private function resolveSelect($resources)
