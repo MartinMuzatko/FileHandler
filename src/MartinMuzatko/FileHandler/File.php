@@ -84,6 +84,11 @@ class File
 		*/
 	}
 
+	protected function resolvePath($file)
+	{
+		return is_dir($file) ? rtrim($file, '/').'/' : $file;
+	}
+
 	/**
 	 * Base for Construct.
 	 * @see File::__construct
@@ -94,7 +99,7 @@ class File
 	{
 		if (is_string($resource))
 		{
-			return $resource;
+			return $this->resolvePath($resource);
 		}
 		if ($resource instanceof File || is_array($resource))
 		{
@@ -145,7 +150,7 @@ class File
 
 	public function resolvePath($file)
 	{
-		return is_dir($file) ? rtrim($file, '/').'/' : $file;
+		return $this->selection == [] ? $this->path : $this->selection;
 	}
 
 	private function resolveSelect($resources)
