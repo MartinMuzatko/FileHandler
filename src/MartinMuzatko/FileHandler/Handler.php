@@ -120,6 +120,10 @@ class Handler
 		{
 			throw new \Exception ('File is not writeable');
 		}
+		if (!$info->isfile)
+		{
+			throw new \Exception ('Can only write to Files, not Directories');
+		}
 		if (is_array($content))
 		{
 			implode($seperator, $content);
