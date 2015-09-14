@@ -57,189 +57,9 @@ class File
 		//fclose($this->handle);
 	}
 
-	private function getInfo()
-	{
-		return FileHandler::getInfo($this->path);
-	}
-
-	/**
-	 * Similar to Filehandler::getInfo()
-	 * Maps all information to the object, so you can access them via:
-	 * $f = new File('ex'); $f->created; $f->path; etc.
-	 * @return void
-	 */
-	protected function resolveInfo()
-	{
-		$infos = $this->getInfo();
-		foreach ($infos as $key => $info)
-		{
-			$this->$key = $info;
-		}
-		/*
-		if (stream_get_meta_data($this->handle)['uri'] != $this->path)
-		{
-			fclose($this->handle);
-			$this->handle = fopen($this->path, $this->mode);
-		}
-		*/
-	}
-
-	protected function resolvePath($file)
-	{
-		return is_dir($file) ? rtrim($file, '/').'/' : $file;
-	}
-
-	/**
-	 * Base for Construct.
-	 * @see File::__construct
-	 * @param string | resource | File $resource
-	 * @return array | boolean
-	 */
-	protected function getResource($resource)
-	{
-		if (is_string($resource))
-		{
-			return $this->resolvePath($resource);
-		}
-		if ($resource instanceof File || is_array($resource))
-		{
-			$this->select($resource);
-			return $this->selection;
-		}
-		if (is_resource($resource))
-		{
-			if (get_resource_type($resource) == 'stream')
-			{
-				return stream_get_meta_data($resource)['uri'];
-			}
-		}
-		if (is_null($resource))
-		{
-			return dirname($_SERVER["SCRIPT_FILENAME"]).'/';
-		}
-
-		return false;
-	}
-
-	/**
-	 * Selecting files by 
-	 * 		paths
-	 * 		array of paths
-	 * 		array of Files
-	 * 		array of File Selections
-	 * You can also mix these
-	 * Example:
-	 * -------------------
-	 * $file->select('file.png');
-	 * $file->select(['file.png', 'another.jpg', 'file.avi']);
-	 * $file->select([['file.png', 'another.jpg'], 'file.avi']);
-	 * $file->select([$file->find(), 'customers/file.txt']);
-	 * $file->select($file);
-	 * -------------------
-	 * Any array or array of arrays will be traversed down to create an one-dimensional array saved to public property $selection.
-	 * Selections are retrievable by get()
-	 * @param array | string | File -  $resoures
-	 * @see File::__construct()
-	 */
-	public function select($resources = [])
-	{
-		$this->selection = [];
-		$this->resolveSelect($resources);
-		return $this;
-	}
-
-	/**
-	 * This method is used as final-method get selections made by find() or select() or new File()
-	 * Returns [path] if no selection is done.
-	 * @return array
-	 */
-	public function get()
-	{
-		return $this->selection == [] ? [$this->path] : $this->selection;
-	}
-
-	private function resolveSelect($resources)
-	{
-		if ($resources instanceof File)
-		{
-			if (count($resources->selection))
-			{
-				foreach ($resources->selection as $resource)
-				{
-					$this->selection[] = $this->resolvePath($resource);
-				}
-			}
-			else
-			{
-				$this->selection[] = $this->resolvePath($resources->path);
-			}
-		}
-		elseif (is_array($resources))
-		{
-			foreach ($resources as $resource) 
-			{
-				$this->resolveSelect($resource);
-			}
-		}
-		else
-		{
-			$this->selection[] = $this->resolvePath($resources);
-		}
-	}
-
-	/**
-	 * Get Content of File regardless of contenttype
-	 * @see File::__construct
-	 * @param mixed $content
-	 */
-	protected function getContent($content)
-	{
-		if ($content instanceof File || is_resource($content))
-		{
-			$res = $this->getResource($content);
-			$file = new File($res);
-			if ($file->exists)
-			{
-				return $this->content = $file->read();
-			}
-			throw new \Exception('file does not exist');
-		}
-		return $this->content = $content;
-	}
-
-	/**
-	 * Resolve Directories to be created 
-	 * when moving or renaming a file to a non-existing path.
-	 * @param string $target
-	 * @param boolean $origin
-	 * @return string path of the new end-directory
-	 */
-	protected function resolveMakeDir($target, $origin = false)
-	{
-		if (strpos($target, '/') != false)
-		{
-			$dir = $this->dirname.'/';
-			$folders = explode('/', $target);
-
-			$path = $dir;
-			if ($origin)
-			{
-				$path = '';
-				array_pop($folders);
-			}
-			foreach ($folders as $folder)
-			{
-				$path .= $folder . '/'; 
-				if (!is_dir($path))
-				{
-					mkdir($path);
-				}
-			}
-			return $path;
-		}
-	}
-
-	/* FILE LEVEL METHODS */
+	/* --------------------------------------------- *\
+		FILE LEVEL METHODS
+	\* --------------------------------------------- */
 
 	/**
 	 * Creates File at destination, given by constructor
@@ -258,6 +78,7 @@ class File
 		$this->resolveInfo();
 		return $this;
 	}
+
 	/**
 	 * Copy file to target
 	 * @param mixed $target
@@ -345,57 +166,34 @@ class File
 		return $this;
 	}
 
-	/* CONTENT LEVEL METHODS */
-	public function merge($target)
-	{
-		
-	}
+	/* --------------------------------------------- *\
+		SELECTION, FILTERING, RETRIEVING 
+	\* --------------------------------------------- */
 
 	/**
-	 * Read contents of file.
-	 * Method chain is broken after calling this method.
-	 * @return string
+	 * Selecting files by 
+	 * 		paths
+	 * 		array of paths
+	 * 		array of Files
+	 * 		array of File Selections
+	 * You can also mix these
+	 * Example:
+	 * -------------------
+	 * $file->select('file.png');
+	 * $file->select(['file.png', 'another.jpg', 'file.avi']);
+	 * $file->select([['file.png', 'another.jpg'], 'file.avi']);
+	 * $file->select([$file->find(), 'customers/file.txt']);
+	 * $file->select($file);
+	 * -------------------
+	 * Any array or array of arrays will be traversed down to create an one-dimensional array saved to public property $selection.
+	 * Selections are retrievable by get()
+	 * @param array | string | File -  $resoures
+	 * @see File::__construct()
 	 */
-	public function read()
+	public function select($resources = [])
 	{
-		$read = FileHandler::read($this->path);
-		if ((string)(int) $read === $read)
-		{
-			return (int) $read;
-		}
-		if ((string)(float) $read == $read)
-		{
-			return (float) $read;
-		}
-		return $read;
-	}
-
-	/**
-	 * Adding content to a file.
-	 * @param mixed $content
-	 * @param string $separator - defaults to newline+carriage return 
-	 * @return this
-	 */
-	public function concat($content, $separator = CRLF)
-	{
-		$read = $this->read();
-		$read .= $read == '' ? '' : $separator;
-		$content = $this->getContent($content);
-		$content = $read.$content;
-		$this->write($content);
-		return $this;
-	}
-
-	/**
-	 * Write as in overwrite 
-	 * use concat if you want to add to the file instead of overwriting
-	 * @param mixed $content
-	 * @return this
-	 */
-	public function write($content)
-	{
-		$content = $this->getContent($content);
-		FileHandler::write($this->path, $content);
+		$this->selection = [];
+		$this->resolveSelect($resources);
 		return $this;
 	}
 
@@ -499,9 +297,192 @@ class File
 	}
 
 	/**
+	 * This method is used as final-method get selections made by find() or select() or new File()
+	 * @return array
+	 */
+	public function get()
+	{
+		return $this->selection;
+	}
+
+	/* --------------------------------------------- *\
+		CONTENT LEVEL METHODS
+	\* --------------------------------------------- */
+
+	public function merge($target)
+	{
+		
+	}
+
+	/**
+	 * Read contents of file.
+	 * Method chain is broken after calling this method.
+	 * @return string
+	 */
+	public function read()
+	{
+		$read = FileHandler::read($this->path);
+		if ((string)(int) $read === $read)
+		{
+			return (int) $read;
+		}
+		if ((string)(float) $read == $read)
+		{
+			return (float) $read;
+		}
+		return $read;
+	}
+
+	/**
+	 * Adding content to a file.
+	 * @param mixed $content
+	 * @param string $separator - defaults to newline+carriage return 
+	 * @return this
+	 */
+	public function concat($content, $separator = CRLF)
+	{
+		$read = $this->read();
+		$read .= $read == '' ? '' : $separator;
+		$content = $this->getContent($content);
+		$content = $read.$content;
+		$this->write($content);
+		return $this;
+	}
+
+	/**
+	 * Write as in overwrite 
+	 * use concat if you want to add to the file instead of overwriting
+	 * @param mixed $content
+	 * @return this
+	 */
+	public function write($content)
+	{
+		$content = $this->getContent($content);
+		FileHandler::write($this->path, $content);
+		return $this;
+	}
+
+	/* --------------------------------------------- *\
+		PROTECTED METHODS
+	\* --------------------------------------------- */
+
+	/**
+	 * Base for Construct.
+	 * @see File::__construct
+	 * @param string | resource | File $resource
+	 * @return array | boolean
+	 */
+	protected function getResource($resource)
+	{
+		if (is_string($resource))
+		{
+			return $this->resolvePath($resource);
+		}
+		if ($resource instanceof File || is_array($resource))
+		{
+			$this->select($resource);
+			return $this->selection;
+		}
+		if (is_resource($resource))
+		{
+			if (get_resource_type($resource) == 'stream')
+			{
+				return stream_get_meta_data($resource)['uri'];
+			}
+		}
+		if (is_null($resource))
+		{
+			return dirname($_SERVER["SCRIPT_FILENAME"]).'/';
+		}
+
+		return false;
+	}
+
+	protected function resolveSelect($resources)
+	{
+		if ($resources instanceof File)
+		{
+			if (count($resources->selection))
+			{
+				foreach ($resources->selection as $resource)
+				{
+					$this->selection[] = $this->resolvePath($resource);
+				}
+			}
+			else
+			{
+				$this->selection[] = $this->resolvePath($resources->path);
+			}
+		}
+		elseif (is_array($resources))
+		{
+			foreach ($resources as $resource) 
+			{
+				$this->resolveSelect($resource);
+			}
+		}
+		else
+		{
+			$this->selection[] = $this->resolvePath($resources);
+		}
+	}
+
+	/**
+	 * Get Content of File regardless of contenttype
+	 * @see File::__construct
+	 * @param mixed $content
+	 */
+	protected function getContent($content)
+	{
+		if ($content instanceof File || is_resource($content))
+		{
+			$res = $this->getResource($content);
+			$file = new File($res);
+			if ($file->exists)
+			{
+				return $this->content = $file->read();
+			}
+			throw new \Exception('file does not exist');
+		}
+		return $this->content = $content;
+	}
+
+	/**
+	 * Resolve Directories to be created 
+	 * when moving or renaming a file to a non-existing path.
+	 * @param string $target
+	 * @param boolean $origin
+	 * @return string path of the new end-directory
+	 */
+	protected function resolveMakeDir($target, $origin = false)
+	{
+		if (strpos($target, '/') != false)
+		{
+			$dir = $this->dirname.'/';
+			$folders = explode('/', $target);
+
+			$path = $dir;
+			if ($origin)
+			{
+				$path = '';
+				array_pop($folders);
+			}
+			foreach ($folders as $folder)
+			{
+				$path .= $folder . '/'; 
+				if (!is_dir($path))
+				{
+					mkdir($path);
+				}
+			}
+			return $path;
+		}
+	}
+
+	/**
 	 * resolves search operators
 	 */
-	private function resolveSearch($value, $search)
+	protected function resolveSearch($value, $search)
 	{
 		$allowedOperators = ['<', '>', '<=', '>=', '!', '!='];
 		$regex = '/[('.implode(')(', $allowedOperators).')]/';
@@ -528,5 +509,32 @@ class File
 				return $value == $searchValue;
 		}
 		return false;
+	}
+
+	/**
+	 * Similar to Handler::getInfo()
+	 * Maps all information to the object, so you can access them via:
+	 * $f = new File('ex'); $f->created; $f->path; etc.
+	 * @return void
+	 */
+	protected function resolveInfo()
+	{
+		$infos = FileHandler::getInfo($this->path);
+		foreach ($infos as $key => $info)
+		{
+			$this->$key = $info;
+		}
+		/*
+		if (stream_get_meta_data($this->handle)['uri'] != $this->path)
+		{
+			fclose($this->handle);
+			$this->handle = fopen($this->path, $this->mode);
+		}
+		*/
+	}
+
+	protected function resolvePath($file)
+	{
+		return is_dir($file) ? rtrim($file, '/').'/' : $file;
 	}
 }
