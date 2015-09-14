@@ -17,6 +17,8 @@ class File
 
 	private $content;
 
+	public $selection = [];
+
 	#public $handle;
 
 	#private $mode = 'r+';
@@ -27,10 +29,11 @@ class File
 	 * Instance of File
 	 * String (Paths)
 	 * Resources (Handles retrieved by fopen())
+	 * NULL (gets path from file the )
 	 * Any other kind of File Stream
 	 * @param mixed $path
 	 */
-	function __construct($resource)
+	function __construct($resource = NULL)
 	{
 		$path = $this->getResource($resource);
 		if ($path)
@@ -81,7 +84,7 @@ class File
 	 * Base for Construct.
 	 * @see File::__construct
 	 * @param string | resource | File $resource
-	 * @return string | boolean
+	 * @return string | array | boolean
 	 */
 	protected function getResource($resource)
 	{
@@ -100,9 +103,47 @@ class File
 				return stream_get_meta_data($resource)['uri'];
 			}
 		}
+		if (is_null($resource))
+		{
+			return dirname($_SERVER["SCRIPT_FILENAME"]).'/';
+		}
+		if (is_array($resource))
+		{
+			$this->select($resource);
+			return $this->selection; 
+		}
 
 		return false;
 	}
+
+	public function select($resources = [])
+	{
+		
+		if ($resources instanceof File)
+		{
+			if (count($resources->selection))
+			{
+				$this->sel($resources->selection);
+			}
+		}
+		else
+		{
+			$resources->selection
+		}
+		return $this;
+	}
+
+	private function sel($resources)
+	{
+		$this->selection = [];
+		foreach ($resources as $resource)
+		{
+			$this->selection[] = is_dir($resource) 
+				? rtrim($resource, '/').'/' 
+				: $resource;
+		}
+	}
+
 	/**
 	 * Get Content of File regardless of contenttype
 	 * @see File::__construct
@@ -318,24 +359,109 @@ class File
 	/**
 	 * Find files in directory, regex enabled.
 	 * By default, lists all files.
+	 * EXAMPLES:
+	 * --------------------
+	 * Find by string:
+	 * find('item.png')
+	 * --------------------
+	 * Find by Regex:
+	 * find('/[\w]*$/')
+	 * --------------------
+	 * Find by Array:
+	 * find(['mimetype' => 'image'])
+	 * find(['size' => '>600KB'])
+	 * find(['created' => '>15393837'])
+	 * 
+	 * --------------------
 	 * returns empty array if nothing found.
-	 * @param string|regex $lookup
+	 * @param string|regex|array $lookup
 	 * @return array
 	 */
 	public function find($lookup = '/.+/')
 	{
 	 	// TODO: recursive folder search+list
-		$files = scandir($this->dirname);
-		if (strpos($lookup, '/') === 0 
-			&& strrpos($lookup, '/') + 1 == strlen($lookup))
+
+		$files = $this->isdir ? scandir($this->path) : scandir($this->dirname);
+		$foundFiles = [];
+		// Find one or more files
+		if (is_string($lookup))
 		{
-			return preg_grep($lookup, $files);
+			if (strpos($lookup, '/') === 0 
+				&& strrpos($lookup, '/') + 1 == strlen($lookup))
+			{
+				foreach(preg_grep($lookup, $files) as $file)
+				{
+					$foundFiles[] = is_dir($file) ? $file.'/' : $file;
+				}
+			}
+			// Find only one item
+			else
+			{
+				$files = @$files[array_flip($files)[$lookup]];
+				foreach($files as $file)
+				{
+					$foundFiles[] = is_dir($file) ? $file.'/' : $file;
+				}
+			}
 		}
-		else
+		else if(is_array($lookup))
 		{
-			$files = @$files[array_flip($files)[$lookup]];
-			return $files == NULL ? [] : [$files];
+			$fileInfos = [];
+			foreach ($files as $file)
+			{
+				$fileInfos[] = new File($file);
+			}
+			foreach ($fileInfos as $file)
+			{
+				foreach ($lookup as $attribute => $search) 
+				{
+					if (property_exists($file, $attribute))
+					{
+						$info = $file->$attribute;
+						if ($this->resolveSearch($info, $search))
+						{
+							$foundFiles[] = $file->basename;
+						}
+					}
+				}
+			}
 		}
+		$this->selection = $foundFiles;
+		return $foundFiles;
 	}
 
+	/**
+	 * resolves search operators
+	 */
+	private function resolveSearch($value, $search)
+	{
+		$allowedOperators = ['<', '>', '<=', '>=', '!', '!='];
+		$regex = '/[('.implode(')(', $allowedOperators).')]/';
+		// TODO: PROBLEM WITH TYPE CASTING!
+		$searchValue = preg_split($regex, (string) $search, -1, 1)[0];
+		$operator = str_replace($searchValue, '', $search);
+		// Operators can't be interpolated
+		// Something like if ($search $operator $value){}
+		// is NOT possible.
+		switch ($operator)
+		{
+			case '<':
+				return $value < $searchValue;
+			case '>':
+				return $value > $searchValue;
+			case '<=':
+				return $value <= $searchValue;
+			case '>=':
+				return $value >= $searchValue;
+			case '!':
+			case '!=':
+				return $value != $searchValue;
+			default:
+				return $value == $searchValue;
+		}
+		return false;
+	}
 }
+
+
+
