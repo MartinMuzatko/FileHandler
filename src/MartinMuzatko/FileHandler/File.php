@@ -116,6 +116,26 @@ class File
 		return false;
 	}
 
+	/**
+	 * Selecting files by 
+	 * 		paths
+	 * 		array of paths
+	 * 		array of Files
+	 * 		array of File Selections
+	 * You can also mix these
+	 * Example:
+	 * -------------------
+	 * $file->select('file.png');
+	 * $file->select(['file.png', 'another.jpg', 'file.avi']);
+	 * $file->select([['file.png', 'another.jpg'], 'file.avi']);
+	 * $file->select([$file->find(), 'customers/file.txt']);
+	 * $file->select($file);
+	 * -------------------
+	 * Any array or array of arrays will be traversed down to create an one-dimensional array saved to public property $selection.
+	 * Selections are retrievable by get()
+	 * @param array | string | File -  $resoures
+	 * @see File::__construct()
+	 */
 	public function select($resources = [])
 	{
 		$this->selection = [];
