@@ -28,8 +28,10 @@ class Handler
 	 */
 	public static function getInfo($file)
 	{
+		$file = str_replace('\\', '/', $file);
 		$info 				= @pathinfo($file);
 		$info['path']		= $file;
+		$info['absolute']	= @str_replace('\\', '/', @realpath($file));
 		$info['width']		= @getimagesize($file)[0];
 		$info['height']		= @getimagesize($file)[1];
 		$info['created']	= @filectime($file);
@@ -38,16 +40,15 @@ class Handler
 		$info['type']		= @filetype($file);
 		$info['owner']		= @fileowner($file);
 		$info['group']		= @filegroup($file);
-		$info['perms']		= decoct(@fileperms($file));
+		$info['perms']		= @decoct(@fileperms($file));
 		$info['writable']	= @is_writable($file);
 		$info['readable']	= @is_readable($file);
 		$info['exists']		= @file_exists($file);
 		$info['isfile']		= @is_file($file);
 		$info['isdir']		= @is_dir($file);
 		$info['islink']		= @is_link($file);
-		
-		$info['mimetype'] = false;
-		$info['encoding'] = false;
+		$info['mimetype'] 	= NULL;
+		$info['encoding'] 	= NULL;
 		if ($info['exists'])
 		{
 			if (class_exists('finfo'))
