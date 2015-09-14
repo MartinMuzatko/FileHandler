@@ -460,6 +460,22 @@ class File
 			}
 		}
 		$this->selection = $foundFiles;
+		// Using Usort together with new File Instances will unnecessarily affect performance.
+		// Having an array of 20 items will already add 1 second to execution time.
+		/*
+		usort(
+			$foundFiles,
+			function($a, $b) use ($attribute)
+			{
+				$a = new File($a);
+				$b = new File($b);
+				if ($a->$attribute === $b->$attribute)
+				{
+					return 0;
+				}
+				return ($a->$attribute > $b->$attribute) ? -1 : 1;
+			}
+		);*/
 		return $this;
 	}
 
