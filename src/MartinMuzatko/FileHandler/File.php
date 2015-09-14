@@ -148,7 +148,12 @@ class File
 		return $this;
 	}
 
-	public function resolvePath($file)
+	/**
+	 * This method is used as final-method get selections made by find() or select() or new File()
+	 * Returns path if no selection is done.
+	 * @return array | string
+	 */
+	public function get()
 	{
 		return $this->selection == [] ? $this->path : $this->selection;
 	}
@@ -331,7 +336,7 @@ class File
 	/**
 	 * Changes the permissions of a file, using chmod octets
 	 * eg: 0777 (equals to 511) or 0644 (equals to 420)
-	 * @param octet |int $octet
+	 * @param octet | int $octet
 	 */
 	public function chmod($octet)
 	{
@@ -395,7 +400,7 @@ class File
 	}
 
 	/**
-	 * Find files in directory, regex enabled.
+	 * Find files in a directory, regex enabled.
 	 * By default, lists all files.
 	 * EXAMPLES:
 	 * --------------------
@@ -417,9 +422,15 @@ class File
 	 */
 	public function find($lookup = '/.+/')
 	{
-	 	// TODO: recursive folder search+list
+		// TODO: recursive folder search+list
 
-		$files = $this->isdir ? scandir($this->path) : scandir($this->dirname);
+		$scans = $this->isdir ? scandir($this->path) : scandir($this->dirname);
+		$files = [];
+		// Scanned files have to be prefixed with $this->path, as they only return their basename.
+		foreach ($scans as $scan)
+		{
+			$files[] = $this->path.$scan;
+		}
 		$foundFiles = [];
 		// Find one or more files
 		if (is_string($lookup))
@@ -458,13 +469,12 @@ class File
 						$info = $file->$attribute;
 						if ($this->resolveSearch($info, $search))
 						{
-							$foundFiles[] = $file->basename;
+							$foundFiles[] = $file->path;
 						}
 					}
 				}
 			}
 		}
-		$this->selection = $foundFiles;
 		// Using Usort together with new File Instances will unnecessarily affect performance.
 		// Having an array of 20 items will already add 1 second to execution time.
 		/*
@@ -481,6 +491,7 @@ class File
 				return ($a->$attribute > $b->$attribute) ? -1 : 1;
 			}
 		);*/
+		$this->select($foundFiles);
 		return $this;
 	}
 
