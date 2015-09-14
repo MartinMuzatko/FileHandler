@@ -42,7 +42,8 @@ class File
 		$path = $this->getResource($resource);
 		if ($path)
 		{
-			$this->path = $path;
+			// Get first element of selection (result of getResource)
+			$this->path = $path[0];
 			//$this->handle = fopen($this->path, $this->mode);
 			// when working with handle that stays open,
 			// this error is thrown:
@@ -376,26 +377,28 @@ class File
 	{
 		if (is_string($resource))
 		{
-			return $this->resolvePath($resource);
+			$this->select($this->resolvePath($resource));
 		}
-		if ($resource instanceof File || is_array($resource))
+		elseif ($resource instanceof File || is_array($resource))
 		{
 			$this->select($resource);
-			return $this->selection;
 		}
-		if (is_resource($resource))
+		elseif (is_resource($resource))
 		{
 			if (get_resource_type($resource) == 'stream')
 			{
-				return stream_get_meta_data($resource)['uri'];
+				$this->select(stream_get_meta_data($resource)['uri']);
 			}
 		}
-		if (is_null($resource))
+		elseif (is_null($resource))
 		{
-			return dirname($_SERVER["SCRIPT_FILENAME"]).'/';
+			$this->select(dirname($_SERVER["SCRIPT_FILENAME"]).'/');
 		}
-
-		return false;
+		else
+		{
+			return false;
+		}
+		return $this->selection; 
 	}
 
 	protected function resolveSelect($resources)
