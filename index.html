@@ -240,13 +240,13 @@ $f->find('/\w.*/');
 						<h4><i class="fa fa-tag"></i> v1.0.0</h4>
 						<ul class="release-downloads">
 							<li>
-								<a class="button secondary" href="/MartinMuzatko/FileHandler/archive/v1.0.0.zip" rel="nofollow">
+								<a class="button secondary" href="https://github.com/MartinMuzatko/FileHandler/archive/v2.0.0.zip" rel="nofollow">
 									<i class="fa fa-file-zip-o fa-2x"></i>
 									<strong>Source code</strong> (zip)
 								</a>
 							</li>
 							<li>
-								<a class="button secondary" href="/MartinMuzatko/FileHandler/archive/v1.0.0.tar.gz" rel="nofollow">
+								<a class="button secondary" href="https://github.com/MartinMuzatko/FileHandler/archive/v2.0.0.tar.gz" rel="nofollow">
 									<i class="fa fa-file-zip-o fa-2x"></i>
 									<strong>Source code</strong> (tar.gz)
 								</a>
@@ -260,17 +260,74 @@ $f->find('/\w.*/');
 				<div>
 					<p>Include the files or use autoloader.</p>
 					<pre>
-						use martinmuzatko\filehandler\File;
-						use martinmuzatko\filehandler\Handler as FileHandler;
+use martinmuzatko\filehandler\File;
+use martinmuzatko\filehandler\Handler as FileHandler;
 					</pre>
 					<p>
-						Using the methods below, you can easily create, write, rename, read files. While FileHandler is a set of static methods, File serves a convenient way of quickly modifying files.
+						Using the methods below, you can easily create, write, rename, read files. 
+					</p>
+					<p>
+						While FileHandler is a set of static methods, File serves a convenient way of quickly modifying files.
 					</p>
 				</div>
 			</article>
 			<article id="Docs">
 				<h2><a href="#Docs">Docs</a></h2>
 				<div>
+					<h3>Methods</h3>
+					<h4>FileHandler (Static)</h4>
+					<p>Methods are called statically (FileHandler::getInfo())</p>
+
+					<h5>getInfo($file)</h5>
+
+					<p>Return fileinformation as object Example:</p>
+
+					<pre>
+$info = FileHandler::getInfo($file); echo $info->writable;
+					</pre>
+					<p>Returns these informations:</p>
+
+					<p><strong>Paths</strong></p>
+					<ul>
+						<li>dirname</li>
+						<li>basename</li>
+						<li>extension</li>
+						<li>filename</li>
+						<li>path</li>
+					</ul>
+					
+					<p><strong>Dimensions</strong></p>
+					<ul>
+						<li>width</li>
+						<li>height</li>
+					</ul>
+
+					<p><b>Timestamps and other Properties</b></p>
+					<ul>
+						<li>created</li>
+						<li>modified</li>
+						<li>size</li>
+						<li>type</li>
+						<li>mimetype (only with finfo enabled)</li>
+						<li>encoding (only with finfo enabled)</li>
+					</ul>
+
+					<p><b>Permissions</b></p>
+					<ul>
+						<li>owner</li>
+						<li>group</li>
+						<li>perms</li>
+					</ul>
+
+					<p><b>Checks - Boolean</b></p>
+					<ul>
+						<li>readable</li>
+						<li>exists</li>
+						<li>isfile</li>
+						<li>isdir</li>
+						<li>islink</li>
+						<li>writable</li>
+					</ul>
 					
 				</div>
 			</article>
